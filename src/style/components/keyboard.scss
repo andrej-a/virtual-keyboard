@@ -1,0 +1,21 @@
+.k_wrapper{
+    width: 100%;
+    max-width: 1280px;
+    min-height: 500px;
+    height: auto;
+    margin: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: red;
+
+    &__keyboard{
+        width: 100%;
+        max-width: 1200px;
+        height: auto;
+        min-height: 300px;
+        margin: 20px;
+
+        background: green;
+    }
+}

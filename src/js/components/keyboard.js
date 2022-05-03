@@ -15,6 +15,7 @@ export default class Keyboard {
     this.keyboardWrapper.classList.add(this.keyboardWrapperClassName);
     this.keyboard.classList.add(this.keyboardClassName);
     this.keyboardWrapper.append(this.keyboard);
+
     return this.keyboardWrapper;
   }
 }
