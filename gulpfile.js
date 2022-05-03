@@ -15,10 +15,16 @@ gulp.task("copy-html", () => {
                 .pipe(browsersync.stream());
 });
 
+gulp.task("init-images", () => {
+  return gulp.src("./src/assets/**/*")
+              .pipe(gulp.dest("dist/src/assets/"))
+              .pipe(browsersync.stream());
+});
+
 gulp.task("build-sass", () => {
     return gulp.src("./src/style/style.scss")
                 .pipe(sass().on('error', sass.logError))
-                .pipe(gulp.dest(dist))
+                .pipe(gulp.dest("dist/src/style"))
                 .pipe(browsersync.stream());
 });
 
@@ -50,7 +56,7 @@ gulp.task("build-js", () => {
                         ]
                       }
                 }))
-                .pipe(gulp.dest(dist))
+                .pipe(gulp.dest("dist/src/js/"))
                 .on("end", browsersync.reload);
 });
 
@@ -62,6 +68,7 @@ gulp.task("watch", () => {
     });
     
     gulp.watch("./src/index.html", gulp.parallel("copy-html"));
+    gulp.watch("./src/index.html", gulp.parallel("init-images"));
     gulp.watch("./src/js/**/*.js", gulp.parallel("build-js"));
     gulp.watch("./src/style/**/*.scss", gulp.parallel("build-sass"));
 });
@@ -73,7 +80,7 @@ gulp.task("prod", () => {
         .pipe(sass().on('error', sass.logError))
         .pipe(postcss([autoprefixer()]))
         .pipe(cleanCSS())
-        .pipe(gulp.dest(dist));
+        .pipe(gulp.dest("dist/src/style/"));
 
     return gulp.src("./src/js/main.js")
                 .pipe(webpack({
@@ -99,7 +106,7 @@ gulp.task("prod", () => {
                         ]
                       }
                 }))
-                .pipe(gulp.dest(dist));
+                .pipe(gulp.dest("dist/src/js"));
 });
 
 gulp.task("default", gulp.parallel("watch", "build"));
