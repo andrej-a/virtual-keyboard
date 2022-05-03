@@ -15,6 +15,11 @@
         height: auto;
         min-height: 300px;
         margin: 20px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 10px;
 
         background: green;
     }
