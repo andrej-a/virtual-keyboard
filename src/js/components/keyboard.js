@@ -1,6 +1,7 @@
 import CreateElement from './createElement';
 import CreateButtons from './buttons';
 import keyInformation from './keycode';
+import PressingPhysicalButton from './pressing';
 
 export default class Keyboard {
   constructor(keyboardWrapperClassName, keyboardClassName) {
@@ -23,6 +24,9 @@ export default class Keyboard {
       const btn = new CreateButtons('button', 'systemButton').init(item);
       this.keyboard.append(btn);
     });
+
+    const pressing = new PressingPhysicalButton('active');
+    pressing.keyDown(this.keyboard.children);
 
     return this.keyboardWrapper;
   }

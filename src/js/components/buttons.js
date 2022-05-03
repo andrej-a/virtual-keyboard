@@ -14,6 +14,7 @@ export default class CreateButtons {
     } else {
       this.button.classList.add(this.buttonClassName);
     }
+    this.button.code = item.code;
     this.button.innerText = item.key;
     return this.button;
   }
