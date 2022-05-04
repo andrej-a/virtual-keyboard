@@ -7,7 +7,6 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    background: red;
 
     &__keyboard{
         width: 100%;
@@ -21,6 +20,5 @@
         flex-wrap: wrap;
         gap: 10px;
 
-        background: green;
     }
 }

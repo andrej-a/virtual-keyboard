@@ -381,7 +381,7 @@ const keyInformation = [
     keyEN_SHIFT: 'Shift',
     keyRU: 'Shift',
     keyRU_SHIFT: 'Shift',
-    code: 'ShiftLeft',
+    code: 'ShiftRight',
     system: true,
   },
   {

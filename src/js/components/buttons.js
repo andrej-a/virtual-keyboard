@@ -9,44 +9,73 @@ export default class CreateButtons {
     this.buttonClassName = buttonClassName;
     this.systemButtonClassName = systemButtonClassName;
     this.activeClassName = activeClassName;
-    this.parent = parent;
-    this.pressing = new PressingPhysicalButton('active');
+
+    this.parent = parent; // keyboard
+    this.pressing = new PressingPhysicalButton('active'); // put active class when you press button
+    this.shift = false;
   }
 
   init() {
     this.addKeyToKeyboard(keyInformation);
-    this.switchLanguage();
+    this.switchLanguageByHotKeys();
     this.pressing.keyDown(this.parent.children);
+    this.pressToShift();
   }
 
   addKeyToKeyboard(array) {
     array.forEach((item) => {
       const {
-        key, keyEN_SHIFT, keyRU, keyRU_SHIFT, code,
+        key, keyENShift, keyRU, keyRUShift, code,
       } = item; // get props from BD
 
-      this.button = new CreateElement('button').init();
+      const btn = new CreateElement('button').init();
 
       if (item.system) {
-        this.button.classList.add(this.systemButtonClassName);
-        this.button.classList.add(code);
+        btn.classList.add(this.systemButtonClassName);
+        btn.classList.add(code);
       } else {
-        this.button.classList.add(this.buttonClassName);
+        btn.classList.add(this.buttonClassName);
       }
 
-      this.button.code = code; // put the btn code to button
+      btn.code = code; // put the btn code to button
+
+      btn.onclick = () => {
+        console.log(btn.innerText);
+      };
 
       if (!localStorage.getItem('language')) { // check language in localStorage
-        localStorage.setItem('language', 'EN'); // if is not set English like default language
+        localStorage.setItem('language', 'EN'); // if is not, set English like default language
         this.button.innerText = key;
       } else {
-        this.button.innerText = localStorage.getItem('language') === 'EN' ? key : keyRU; // if it is choose between EN and RU
+        btn.innerText = localStorage.getItem('language') === 'EN' ? key : keyRU; // if it is, choose between EN and RU
       }
 
-      this.keystrokesAnimate(this.button);
-
-      this.parent.append(this.button);
+      this.keystrokesAnimate(btn);
+      this.buttons(btn);
+      this.parent.append(btn);
     });
+  }
+
+  buttons(btn) {
+    switch (btn.code) {
+      case 'ShiftLeft':
+        btn.addEventListener('mousedown', () => {
+          this.shift = true;
+          CreateButtons.setUpperCase(this.parent.children);
+        });
+        btn.addEventListener('mouseup', () => {
+          this.shift = false;
+          CreateButtons.setLowerCase(this.parent.children);
+        });
+        btn.addEventListener('mouseleave', () => {
+          this.shift = false;
+          CreateButtons.setLowerCase(this.parent.children);
+        });
+        break;
+
+      default:
+        break;
+    }
   }
 
   keystrokesAnimate(btn) {
@@ -57,9 +86,60 @@ export default class CreateButtons {
     btn.addEventListener('mouseup', () => {
       btn.classList.remove(this.activeClassName);
     });
+
+    btn.addEventListener('mouseleave', () => {
+      btn.classList.remove(this.activeClassName);
+    });
   }
 
-  switchLanguage() {
+  static setUpperCase(array) {
+    const buttons = [...array];
+    buttons.forEach((elem, i) => {
+      const button = elem;
+      if (localStorage.getItem('language') === 'EN') {
+        button.innerText = keyInformation[i].keyEN_SHIFT;
+      } else {
+        button.innerText = keyInformation[i].keyRU_SHIFT;
+      }
+    });
+  }
+
+  static setLowerCase(array) {
+    const buttons = [...array];
+    buttons.forEach((elem, i) => {
+      const button = elem;
+      if (localStorage.getItem('language') === 'EN') {
+        button.innerText = keyInformation[i].key;
+      } else {
+        button.innerText = keyInformation[i].keyRU;
+      }
+    });
+  }
+
+  pressToShift() {
+    let allowed = true;
+    document.addEventListener('keydown', (event) => {
+      if (event.repeat !== undefined) {
+        allowed = !event.repeat;
+      }
+
+      if (!allowed) return;
+
+      if (event.code === 'ShiftLeft') {
+        this.shift = true;
+        CreateButtons.setUpperCase(this.parent.children);
+      }
+    });
+    document.addEventListener('keyup', (event) => {
+      if (event.code === 'ShiftLeft') {
+        this.shift = false;
+        allowed = true;
+        CreateButtons.setLowerCase(this.parent.children);
+      }
+    });
+  }
+
+  switchLanguageByHotKeys() {
     this.pressed = []; // array for pressing keys
     this.hotKeys = ['ControlRight', 'Enter']; // hot keys for switching language
 
@@ -70,7 +150,7 @@ export default class CreateButtons {
       }
     });
 
-    document.addEventListener('keyup', (e) => {
+    document.addEventListener('keyup', () => {
       // if each of keys from hot keys was pressing, and there are not any other keys
       if (this.hotKeys.every((btn) => this.pressed.indexOf(btn) !== -1) && this.pressed.length === this.hotKeys.length) {
         // change language in localStorage to opposite
