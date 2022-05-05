@@ -398,6 +398,7 @@ const keyInformation = [
     keyRU: 'Alt',
     keyRU_SHIFT: 'Alt',
     code: 'AltLeft',
+    system: true,
   },
   {
     key: ' ',
