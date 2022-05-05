@@ -2,6 +2,7 @@
 import CreateElement from './createElement';
 import keyInformation from './keycode';
 import PressingPhysicalButton from './pressing';
+import KeystrokesAnimate from './animateKeyStrokes';
 
 export default class CreateButtons {
   constructor(buttonClassName, systemButtonClassName, activeClassName, parent) {
@@ -12,7 +13,9 @@ export default class CreateButtons {
 
     this.parent = parent; // keyboard
     this.pressing = new PressingPhysicalButton('active'); // put active class when you press button
+
     this.shift = false;
+    this.caps = false;
   }
 
   init() {
@@ -50,7 +53,7 @@ export default class CreateButtons {
         btn.innerText = localStorage.getItem('language') === 'EN' ? key : keyRU; // if it is, choose between EN and RU
       }
 
-      this.keystrokesAnimate(btn);
+      this.animate = new KeystrokesAnimate(btn, this.activeClassName);
       this.buttons(btn);
       this.parent.append(btn);
     });
@@ -78,28 +81,14 @@ export default class CreateButtons {
     }
   }
 
-  keystrokesAnimate(btn) {
-    btn.addEventListener('mousedown', () => {
-      btn.classList.add(this.activeClassName);
-    });
-
-    btn.addEventListener('mouseup', () => {
-      btn.classList.remove(this.activeClassName);
-    });
-
-    btn.addEventListener('mouseleave', () => {
-      btn.classList.remove(this.activeClassName);
-    });
-  }
-
   static setUpperCase(array) {
     const buttons = [...array];
+
     buttons.forEach((elem, i) => {
-      const button = elem;
       if (localStorage.getItem('language') === 'EN') {
-        button.innerText = keyInformation[i].keyEN_SHIFT;
+        buttons[i].innerText = keyInformation[i].keyEN_SHIFT;
       } else {
-        button.innerText = keyInformation[i].keyRU_SHIFT;
+        buttons[i].innerText = keyInformation[i].keyRU_SHIFT;
       }
     });
   }
@@ -107,23 +96,23 @@ export default class CreateButtons {
   static setLowerCase(array) {
     const buttons = [...array];
     buttons.forEach((elem, i) => {
-      const button = elem;
       if (localStorage.getItem('language') === 'EN') {
-        button.innerText = keyInformation[i].key;
+        buttons[i].innerText = keyInformation[i].key;
       } else {
-        button.innerText = keyInformation[i].keyRU;
+        buttons[i].innerText = keyInformation[i].keyRU;
       }
     });
   }
 
   pressToShift() {
     let allowed = true;
+
     document.addEventListener('keydown', (event) => {
       if (event.repeat !== undefined) {
         allowed = !event.repeat;
       }
 
-      if (!allowed) return;
+      if (!allowed) return; // stop repeat keydown event
 
       if (event.code === 'ShiftLeft') {
         this.shift = true;
@@ -162,7 +151,7 @@ export default class CreateButtons {
 
         this.init(); // and init them again
       }
-      this.pressed = [];
+      this.pressed = []; // clear pressing keys
     });
   }
 }
