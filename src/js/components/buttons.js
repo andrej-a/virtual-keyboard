@@ -27,9 +27,9 @@ export default class CreateButtons {
   }
 
   addKeyToKeyboard(array) {
-    array.forEach((item, i) => {
+    array.forEach((item) => {
       const {
-        key, keyENShift, keyRU, keyRUShift, code,
+        key, keyRU, code,
       } = item; // get props from BD
 
       const btn = new CreateElement('button').init();
@@ -41,6 +41,10 @@ export default class CreateButtons {
       } else {
         btn.classList.add(this.buttonClassName);
       }
+
+      btn.onClick = () => {
+        this.textarea.setString(btn.innerText);
+      };
 
       btn.code = code; // put the btn code to button
 
@@ -211,7 +215,6 @@ export default class CreateButtons {
     this.hotKeys = ['ControlRight', 'Enter']; // hot keys for switching language
 
     document.addEventListener('keydown', (event) => {
-      event.preventDefault();
       if (this.pressed.indexOf(event.code) === -1) { // if you don`t press key yet
         this.pressed.push(event.code); // put it to array
       }
