@@ -23,12 +23,11 @@ export default class CreateButtons {
 
   init() {
     this.addKeyToKeyboard(keyInformation);
-    this.switchLanguageByHotKeys();
     this.pressing.keyDown(this.parent.children);
   }
 
   addKeyToKeyboard(array) {
-    array.forEach((item) => {
+    array.forEach((item, i) => {
       const {
         key, keyENShift, keyRU, keyRUShift, code,
       } = item; // get props from BD
@@ -45,10 +44,6 @@ export default class CreateButtons {
 
       btn.code = code; // put the btn code to button
 
-      btn.onclick = () => {
-        console.log(btn.innerText);
-      };
-
       if (!localStorage.getItem('language')) { // check language in localStorage
         localStorage.setItem('language', 'EN'); // if is not, set English like default language
         this.button.innerText = key;
@@ -59,6 +54,7 @@ export default class CreateButtons {
       this.animate = new KeystrokesAnimate(btn, this.activeClassName);
       this.buttons(btn);
       this.parent.append(btn);
+      this.switchLanguageByHotKeys(this.elements);
     });
   }
 
@@ -210,7 +206,7 @@ export default class CreateButtons {
     });
   }
 
-  switchLanguageByHotKeys() {
+  switchLanguageByHotKeys(array) {
     this.pressed = []; // array for pressing keys
     this.hotKeys = ['ControlRight', 'Enter']; // hot keys for switching language
 
@@ -223,15 +219,11 @@ export default class CreateButtons {
 
     document.addEventListener('keyup', () => {
       // if each of keys from hot keys was pressing, and there are not any other keys
-      if (this.hotKeys.every((btn) => this.pressed.indexOf(btn) !== -1) && this.pressed.length === this.hotKeys.length) {
+      if (this.hotKeys.every((btn) => this.pressed.indexOf(btn) !== -1) && this.pressed.length <= this.hotKeys.length + 1) {
         // change language in localStorage to opposite
         localStorage.setItem('language', `${localStorage.getItem('language') === 'EN' ? 'RU' : 'EN'}`);
 
-        while (this.parent.firstChild) { // remove all buttons from keyboard
-          this.parent.removeChild(this.parent.firstChild);
-        }
-
-        this.init(); // and init them again
+        this.changeRegisterByShift(array);
       }
       this.pressed = []; // clear pressing keys
     });
