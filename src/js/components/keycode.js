@@ -393,6 +393,14 @@ const keyInformation = [
     system: true,
   },
   {
+    key: 'Win',
+    keyEN_SHIFT: 'Win',
+    keyRU: 'Win',
+    keyRU_SHIFT: 'Win',
+    code: 'Win',
+    system: true,
+  },
+  {
     key: 'Alt',
     keyEN_SHIFT: 'Alt',
     keyRU: 'Alt',

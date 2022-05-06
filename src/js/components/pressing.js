@@ -8,7 +8,9 @@ export default class PressingPhysicalButton {
     this.keyUp(arrayBtn);
     document.addEventListener('keydown', (e) => {
       arrayBtn.forEach((btn) => {
-        if (btn.code === e.code) {
+        if (btn.code === 'CapsLock' && btn.code === e.code) {
+          btn.classList.toggle(this.activeClass);
+        } else if (btn.code === e.code) {
           btn.classList.add(this.activeClass);
         }
       });
@@ -18,7 +20,7 @@ export default class PressingPhysicalButton {
   keyUp(array) {
     document.addEventListener('keyup', (e) => {
       array.forEach((btn) => {
-        if (btn.code === e.code) {
+        if (btn.code !== 'CapsLock' && btn.code === e.code) {
           btn.classList.remove(this.activeClass);
         }
       });

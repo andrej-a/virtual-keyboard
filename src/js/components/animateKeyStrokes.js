@@ -1,15 +1,23 @@
 export default class KeystrokesAnimate {
   constructor(btn, activeClassName) {
     btn.addEventListener('mousedown', () => {
-      btn.classList.add(activeClassName);
+      if (btn.code === 'CapsLock') {
+        btn.classList.toggle(activeClassName);
+      } else {
+        btn.classList.add(activeClassName);
+      }
     });
 
     btn.addEventListener('mouseup', () => {
-      btn.classList.remove(activeClassName);
+      if (btn.code !== 'CapsLock') {
+        btn.classList.remove(activeClassName);
+      }
     });
 
     btn.addEventListener('mouseleave', () => {
-      btn.classList.remove(activeClassName);
+      if (btn.code !== 'CapsLock') {
+        btn.classList.remove(activeClassName);
+      }
     });
   }
 }

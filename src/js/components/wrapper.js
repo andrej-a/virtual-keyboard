@@ -9,7 +9,7 @@ export default class Wrapper {
 
     this.textarea = new Textarea('textarea');
     this.textareaPanel = this.textarea.init();
-    this.textarea.setString(this.textareaPanel, "TETTTTT")
+    this.textarea.setString(this.textareaPanel, 'TETTTTT');
     this.keyboard = new Keyboard('k_wrapper', 'k_wrapper__keyboard').init();
   }
 
