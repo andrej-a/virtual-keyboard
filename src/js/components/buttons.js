@@ -34,6 +34,7 @@ export default class CreateButtons {
   init() {
     this.addKeyToKeyboard(keyInformation);
     this.pressing.keyDown(this.parent.children);
+    this.physicalKeyboardInput();
   }
 
   addKeyToKeyboard(array) {
@@ -54,11 +55,13 @@ export default class CreateButtons {
 
       btn.code = code; // put the btn code to button
 
-      btn.onclick = () => {
+      btn.addEventListener('click', () => {
         if (!btn.system) {
           this.instanceOfTextarea.setString(btn.innerText);
+        } else {
+          this.textarea.focus();
         }
-      };
+      });
 
       if (!localStorage.getItem('language')) { // check language in localStorage
         localStorage.setItem('language', 'EN'); // if is not, set English like default language
@@ -72,10 +75,10 @@ export default class CreateButtons {
 
     this.animate = new KeystrokesAnimate(this.elements, this.activeClassName);
     this.switchLanguageByHotKeys(this.elements);
-    this.buttons(this.elements);
+    this.setBehaviorToVirtualButtons(this.elements);
   }
 
-  buttons(array) {
+  setBehaviorToVirtualButtons(array) {
     const buttons = [...array];
     buttons.forEach((btn) => {
       switch (btn.code) {
@@ -119,18 +122,35 @@ export default class CreateButtons {
           });
           break;
 
+        case 'Backspace':
+          btn.addEventListener('click', () => {
+            this.instanceOfTextarea.deleteLetter(1, 0);
+          });
+          break;
+
+        case 'Delete':
+          btn.addEventListener('click', () => {
+            this.instanceOfTextarea.deleteLetter(0, 1);
+          });
+          break;
+
         default:
           break;
       }
     });
   }
 
-  /* inputByPhysicalKeys() {
-    document.addEventListener("keydown", (e) => {
-      console.log(e);
-      this.instanceOfTextarea.setString(`${e.key.length > 1 ? '' : e.key}`);
+  physicalKeyboardInput() {
+    document.addEventListener('keydown', (event) => {
+      if (event.code === 'Backspace') {
+        this.instanceOfTextarea.updatePositionByKeyboard(-1);
+      } else if (event.code === 'Delete') {
+        this.instanceOfTextarea.updatePositionByKeyboard(0);
+      } else if (event.key.length === 1) {
+        this.instanceOfTextarea.updatePositionByKeyboard(1);
+      }
     });
-  } */
+  }
 
   changeRegisterByShift(array) {
     const buttons = [...array];
