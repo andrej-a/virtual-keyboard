@@ -1,21 +1,31 @@
-/* eslint-disable max-len */
 import CreateElement from './createElement';
 import keyInformation from './keycode';
 import PressingPhysicalButton from './pressing';
 import KeystrokesAnimate from './animateKeyStrokes';
+import Textarea from './textarea';
 
 export default class CreateButtons {
-  constructor(buttonClassName, systemButtonClassName, activeClassName, parent) {
+  constructor(
+    buttonClassName,
+    systemButtonClassName,
+    activeClassName,
+    parent,
+  ) {
     this.button = null;
     this.buttonClassName = buttonClassName;
     this.systemButtonClassName = systemButtonClassName;
     this.activeClassName = activeClassName;
-
     this.parent = parent; // keyboard
     this.pressing = new PressingPhysicalButton('active'); // put active class when you press button
+
+    this.instanceOfTextarea = new Textarea('textarea');
+    this.textarea = this.instanceOfTextarea.init();
+
     this.elements = this.parent.children;
     this.shift = false;
     this.caps = false;
+
+    this.parent.parentElement.append(this.textarea);
 
     this.pressToShift();
     this.pressToCaps();
@@ -42,11 +52,13 @@ export default class CreateButtons {
         btn.classList.add(this.buttonClassName);
       }
 
-      btn.onClick = () => {
-        this.textarea.setString(btn.innerText);
-      };
-
       btn.code = code; // put the btn code to button
+
+      btn.onclick = () => {
+        if (!btn.system) {
+          this.instanceOfTextarea.setString(btn.innerText);
+        }
+      };
 
       if (!localStorage.getItem('language')) { // check language in localStorage
         localStorage.setItem('language', 'EN'); // if is not, set English like default language
@@ -55,41 +67,70 @@ export default class CreateButtons {
         btn.innerText = localStorage.getItem('language') === 'EN' ? key : keyRU; // if it is, choose between EN and RU
       }
 
-      this.animate = new KeystrokesAnimate(btn, this.activeClassName);
-      this.buttons(btn);
       this.parent.append(btn);
-      this.switchLanguageByHotKeys(this.elements);
+    });
+
+    this.animate = new KeystrokesAnimate(this.elements, this.activeClassName);
+    this.switchLanguageByHotKeys(this.elements);
+    this.buttons(this.elements);
+  }
+
+  buttons(array) {
+    const buttons = [...array];
+    buttons.forEach((btn) => {
+      switch (btn.code) {
+        case 'ShiftLeft':
+          btn.addEventListener('mousedown', () => {
+            this.shift = true;
+            this.changeRegisterByShift(this.elements);
+          });
+          btn.addEventListener('mouseup', () => {
+            this.shift = false;
+            this.changeRegisterByShift(this.elements);
+          });
+          btn.addEventListener('mouseleave', () => {
+            this.shift = false;
+            this.changeRegisterByShift(this.elements);
+          });
+          break;
+
+        case 'CapsLock':
+          btn.addEventListener('click', () => {
+            this.caps = !this.caps;
+            this.changeRegisterByCaps(this.elements);
+          });
+          break;
+
+        case 'Enter':
+          btn.addEventListener('click', () => {
+            this.instanceOfTextarea.setString('\n');
+          });
+          break;
+
+        case 'Space':
+          btn.addEventListener('click', () => {
+            this.instanceOfTextarea.setString(' ');
+          });
+          break;
+
+        case 'Tab':
+          btn.addEventListener('click', () => {
+            this.instanceOfTextarea.setString('    ');
+          });
+          break;
+
+        default:
+          break;
+      }
     });
   }
 
-  buttons(btn) {
-    switch (btn.code) {
-      case 'ShiftLeft':
-        btn.addEventListener('mousedown', () => {
-          this.shift = true;
-          this.changeRegisterByShift(this.elements);
-        });
-        btn.addEventListener('mouseup', () => {
-          this.shift = false;
-          this.changeRegisterByShift(this.elements);
-        });
-        btn.addEventListener('mouseleave', () => {
-          this.shift = false;
-          this.changeRegisterByShift(this.elements);
-        });
-        break;
-
-      case 'CapsLock':
-        btn.addEventListener('click', () => {
-          this.caps = !this.caps;
-          this.changeRegisterByCaps(this.elements);
-        });
-        break;
-
-      default:
-        break;
-    }
-  }
+  /* inputByPhysicalKeys() {
+    document.addEventListener("keydown", (e) => {
+      console.log(e);
+      this.instanceOfTextarea.setString(`${e.key.length > 1 ? '' : e.key}`);
+    });
+  } */
 
   changeRegisterByShift(array) {
     const buttons = [...array];
@@ -129,54 +170,6 @@ export default class CreateButtons {
     });
   }
 
-  /*   static setUpperCase(array) {
-
-    buttons.forEach((elem, i) => {
-      if (!this.shift) { // if shift is not active
-        buttons[i].innerText = buttons[i].innerText.toUpperCase(); // we just do letters upper case
-      } else if (this.caps) { // we check caps and if caps is active
-        if (localStorage.getItem('language') === 'EN') { // EN LANGUAGE
-          buttons[i].innerText = keyInformation[i].keyEN_SHIFT; // we change letter to SHIFT_LETTER
-          buttons[i].innerText = buttons[i].innerText.toLowerCase(); // and do lower case
-        } else { // RU LANGUAGE
-          buttons[i].innerText = keyInformation[i].keyRU_SHIFT;
-          buttons[i].innerText = buttons[i].innerText.toLowerCase();
-        }
-      }// if shift is active
-       else { // if caps is not active
-        if (localStorage.getItem('language') === 'EN') { // we check lang
-          buttons[i].innerText = keyInformation[i].keyEN_SHIFT; // and do them SHIFT_LETTER
-        } else {
-          buttons[i].innerText = keyInformation[i].keyRU_SHIFT;
-        }
-      }
-    });
-  }
-
-  static setLowerCase(array) {
-    const buttons = [...array];
-
-    buttons.forEach((elem, i) => {
-      if (!this.shift) { // if shift is not active
-        buttons[i].innerText = buttons[i].innerText.toLowerCase(); // we just do letters lower case
-      } else if (this.caps) { // we check caps and if caps is active
-        if (localStorage.getItem('language') === 'EN') { // EN LANGUAGE
-          buttons[i].innerText = keyInformation[i].key; // we change letter to UNSHIFT_LETTER
-          buttons[i].innerText = buttons[i].innerText.toUpperCase(); // and do upper case
-        } else { // RU LANGUAGE
-          buttons[i].innerText = keyInformation[i].keyRU;
-          buttons[i].innerText = buttons[i].innerText.toUpperCase();
-        }
-      } else { // if caps is not active
-        if (localStorage.getItem('language') === 'EN') { // we check lang
-          buttons[i].innerText = keyInformation[i].key; // and do them SHIFT_LETTER
-        } else {
-          buttons[i].innerText = keyInformation[i].keyRU;
-        }
-      }
-    });
-  }
- */
   pressToShift() {
     let allowed = true;
 

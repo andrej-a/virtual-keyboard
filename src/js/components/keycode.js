@@ -377,6 +377,14 @@ const keyInformation = [
     code: 'Slash',
   },
   {
+    key: 'ArrowUp',
+    keyEN_SHIFT: 'ArrowUp',
+    keyRU: 'ArrowUp',
+    keyRU_SHIFT: 'ArrowUp',
+    code: 'ArrowUp',
+    system: true,
+  },
+  {
     key: 'Shift',
     keyEN_SHIFT: 'Shift',
     keyRU: 'Shift',
@@ -430,14 +438,6 @@ const keyInformation = [
     keyRU: 'ArrowLeft',
     keyRU_SHIFT: 'ArrowLeft',
     code: 'ArrowLeft',
-    system: true,
-  },
-  {
-    key: 'ArrowUp',
-    keyEN_SHIFT: 'ArrowUp',
-    keyRU: 'ArrowUp',
-    keyRU_SHIFT: 'ArrowUp',
-    code: 'ArrowUp',
     system: true,
   },
   {
