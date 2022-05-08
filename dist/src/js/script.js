@@ -221,14 +221,17 @@ class CreateButtons {
         case 'ShiftLeft':
           btn.addEventListener('mousedown', () => {
             this.shift = true;
+            this.instanceOfTextarea.setUpperCase(this.caps, this.shift);
             this.changeRegisterByShift(this.elements);
+            btn.addEventListener('mouseleave', () => {
+              this.shift = false;
+              this.instanceOfTextarea.setUpperCase(this.caps, this.shift);
+              this.changeRegisterByShift(this.elements);
+            });
           });
           btn.addEventListener('mouseup', () => {
             this.shift = false;
-            this.changeRegisterByShift(this.elements);
-          });
-          btn.addEventListener('mouseleave', () => {
-            this.shift = false;
+            this.instanceOfTextarea.setUpperCase(this.caps, this.shift);
             this.changeRegisterByShift(this.elements);
           });
           break;
@@ -236,14 +239,17 @@ class CreateButtons {
         case 'ShiftRight':
           btn.addEventListener('mousedown', () => {
             this.shift = true;
+            this.instanceOfTextarea.setUpperCase(this.caps, this.shift);
             this.changeRegisterByShift(this.elements);
+            btn.addEventListener('mouseleave', () => {
+              this.shift = false;
+              this.instanceOfTextarea.setUpperCase(this.caps, this.shift);
+              this.changeRegisterByShift(this.elements);
+            });
           });
           btn.addEventListener('mouseup', () => {
             this.shift = false;
-            this.changeRegisterByShift(this.elements);
-          });
-          btn.addEventListener('mouseleave', () => {
-            this.shift = false;
+            this.instanceOfTextarea.setUpperCase(this.caps, this.shift);
             this.changeRegisterByShift(this.elements);
           });
           break;
@@ -251,7 +257,7 @@ class CreateButtons {
         case 'CapsLock':
           btn.addEventListener('click', () => {
             this.caps = !this.caps;
-            this.instanceOfTextarea.setUpperCase(this.caps);
+            this.instanceOfTextarea.setUpperCase(this.caps, this.shift);
             this.changeRegisterByCaps(this.elements);
           });
           break;
@@ -330,10 +336,25 @@ class CreateButtons {
           this.instanceOfTextarea.setString('    ');
           break;
 
+        case 'Space':
+          event.preventDefault();
+          this.instanceOfTextarea.setString(' ');
+          break;
+
+        case 'Enter':
+          event.preventDefault();
+          this.instanceOfTextarea.setString('\n');
+          break;
+
         default:
           if (event.key.length === 1) {
             event.preventDefault();
-            this.instanceOfTextarea.setString(event.key);
+            const buttons = [...this.elements];
+            buttons.forEach(btn => {
+              if (btn.code === event.code) {
+                this.instanceOfTextarea.setString(btn.innerText);
+              }
+            });
           }
 
           break;
@@ -398,11 +419,13 @@ class CreateButtons {
       if (event.code === 'ShiftLeft' || event.code === 'ShiftRight') {
         this.shift = true;
         this.changeRegisterByShift(this.elements);
+        this.instanceOfTextarea.setUpperCase(this.caps, this.shift);
       }
     });
     document.addEventListener('keyup', event => {
       if (event.code === 'ShiftLeft' || event.code === 'ShiftRight') {
         this.shift = false;
+        this.instanceOfTextarea.setUpperCase(this.caps, this.shift);
         this.changeRegisterByShift(this.elements);
         allowed = true;
       }
@@ -413,7 +436,7 @@ class CreateButtons {
     document.addEventListener('keyup', event => {
       if (event.code === 'CapsLock') {
         this.caps = !this.caps;
-        this.instanceOfTextarea.setUpperCase(this.caps);
+        this.instanceOfTextarea.setUpperCase(this.caps, this.shift);
         this.changeRegisterByCaps(this.elements);
       }
     });
@@ -1023,6 +1046,7 @@ class Textarea {
     this.className = className;
     this.position = 0;
     this.upperCaseText = false;
+    this.shift = false;
   }
 
   init() {
@@ -1033,9 +1057,11 @@ class Textarea {
     return this.textarea;
   }
 
-  setUpperCase(value) {
+  setUpperCase(value, shift) {
     this.upperCaseText = value;
+    this.shift = shift;
     console.log(this.upperCaseText);
+    console.log(this.shift);
   }
 
   updatePositionByClick() {
@@ -1052,9 +1078,19 @@ class Textarea {
   }
 
   setString(value) {
+    let letter = value;
     const start = this.textarea.value.slice(0, this.position);
     const finish = this.textarea.value.slice(this.position);
-    this.textarea.value = `${start}${this.upperCaseText ? value.toUpperCase() : value.toLowerCase()}${finish}`;
+
+    if (this.upperCaseText && !this.shift || !this.upperCaseText && this.shift) {
+      letter = value.toUpperCase();
+    } else if (this.upperCaseText && this.shift) {
+      letter = value.toLowerCase();
+    } else {
+      letter = value;
+    }
+
+    this.textarea.value = `${start}${letter}${finish}`;
     this.position += value.length;
     this.textarea.focus();
     this.textarea.setSelectionRange(this.position, this.position);
@@ -1130,7 +1166,7 @@ class Wrapper {
     this.wrapper.append(new _description__WEBPACK_IMPORTED_MODULE_2__["default"]('task_description', 'RSSchool virtual keyboard task').init());
     this.wrapper.append(this.keyboard);
     this.wrapper.append(new _description__WEBPACK_IMPORTED_MODULE_2__["default"]('task_description', 'For Windows').init());
-    this.wrapper.append(new _description__WEBPACK_IMPORTED_MODULE_2__["default"]('instructions', 'Press Right Ctrl + Enter to change language').init());
+    this.wrapper.append(new _description__WEBPACK_IMPORTED_MODULE_2__["default"]('instructions', 'Press RightCtrl + Enter to change language').init());
     return this.wrapper;
   }
 
