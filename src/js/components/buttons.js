@@ -134,6 +134,12 @@ export default class CreateButtons {
           });
           break;
 
+        case 'ArrowRight':
+          btn.addEventListener('click', (event) => {
+            this.instanceOfTextarea.setString('&#8594');
+          });
+          break;
+
         default:
           break;
       }
@@ -146,6 +152,8 @@ export default class CreateButtons {
         this.instanceOfTextarea.updatePositionByKeyboard(-1);
       } else if (event.code === 'Delete') {
         this.instanceOfTextarea.updatePositionByKeyboard(0);
+      } else if (event.code === 'ArrowUp') {
+        console.log(event);
       } else if (event.key.length === 1) {
         this.instanceOfTextarea.updatePositionByKeyboard(1);
       }
