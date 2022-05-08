@@ -3,9 +3,7 @@ export default class KeystrokesAnimate {
     const buttons = [...array];
     buttons.forEach((btn) => {
       btn.addEventListener('mousedown', () => {
-        if (btn.code === 'CapsLock') {
-          btn.classList.toggle(activeClassName);
-        } else {
+        if (btn.code !== 'CapsLock') {
           btn.classList.add(activeClassName);
         }
       });
@@ -19,6 +17,12 @@ export default class KeystrokesAnimate {
       btn.addEventListener('mouseleave', () => {
         if (btn.code !== 'CapsLock') {
           btn.classList.remove(activeClassName);
+        }
+      });
+
+      btn.addEventListener('click', () => {
+        if (btn.code === 'CapsLock') {
+          btn.classList.toggle(activeClassName);
         }
       });
     });

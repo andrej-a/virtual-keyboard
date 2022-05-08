@@ -36,19 +36,10 @@ export default class Textarea {
   }
 
   setString(value) {
-    let letter = value;
     const start = this.textarea.value.slice(0, this.position);
     const finish = this.textarea.value.slice(this.position);
 
-    if ((this.upperCaseText && !this.shift) || (!this.upperCaseText && this.shift)) {
-      letter = value.toUpperCase();
-    } else if ((this.upperCaseText && this.shift)) {
-      letter = value.toLowerCase();
-    } else {
-      letter = value;
-    }
-
-    this.textarea.value = `${start}${letter}${finish}`;
+    this.textarea.value = `${start}${value}${finish}`;
     this.position += value.length;
     this.textarea.focus();
     this.textarea.setSelectionRange(this.position, this.position);

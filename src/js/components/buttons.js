@@ -207,6 +207,10 @@ export default class CreateButtons {
           event.preventDefault();
           this.instanceOfTextarea.setString('\n');
           break;
+        case 'AltLeft':
+          event.preventDefault();
+          this.textarea.focus();
+          break;
 
         default:
           if (event.key.length === 1) {
@@ -311,7 +315,7 @@ export default class CreateButtons {
 
   switchLanguageByHotKeys(array) {
     this.pressed = []; // array for pressing keys
-    this.hotKeys = ['ControlRight', 'Enter']; // hot keys for switching language
+    this.hotKeys = ['ControlLeft', 'AltLeft']; // hot keys for switching language
 
     document.addEventListener('keydown', (event) => {
       if (this.pressed.indexOf(event.code) === -1) { // if you don`t press key yet
