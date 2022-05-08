@@ -101,9 +101,7 @@ class KeystrokesAnimate {
     const buttons = [...array];
     buttons.forEach(btn => {
       btn.addEventListener('mousedown', () => {
-        if (btn.code === 'CapsLock') {
-          btn.classList.toggle(activeClassName);
-        } else {
+        if (btn.code !== 'CapsLock') {
           btn.classList.add(activeClassName);
         }
       });
@@ -115,6 +113,11 @@ class KeystrokesAnimate {
       btn.addEventListener('mouseleave', () => {
         if (btn.code !== 'CapsLock') {
           btn.classList.remove(activeClassName);
+        }
+      });
+      btn.addEventListener('click', () => {
+        if (btn.code === 'CapsLock') {
+          btn.classList.toggle(activeClassName);
         }
       });
     });
@@ -346,6 +349,11 @@ class CreateButtons {
           this.instanceOfTextarea.setString('\n');
           break;
 
+        case 'AltLeft':
+          event.preventDefault();
+          this.textarea.focus();
+          break;
+
         default:
           if (event.key.length === 1) {
             event.preventDefault();
@@ -445,7 +453,7 @@ class CreateButtons {
   switchLanguageByHotKeys(array) {
     this.pressed = []; // array for pressing keys
 
-    this.hotKeys = ['ControlRight', 'Enter']; // hot keys for switching language
+    this.hotKeys = ['ControlLeft', 'AltLeft']; // hot keys for switching language
 
     document.addEventListener('keydown', event => {
       if (this.pressed.indexOf(event.code) === -1) {
@@ -1000,12 +1008,19 @@ __webpack_require__.r(__webpack_exports__);
 class PressingPhysicalButton {
   constructor(active) {
     this.activeClass = active;
+    this.allowed = true;
   }
 
   keyDown(array) {
     const arrayBtn = [...array];
     this.keyUp(arrayBtn);
     document.addEventListener('keydown', e => {
+      if (e.repeat !== undefined) {
+        this.allowed = !e.repeat;
+      }
+
+      if (!this.allowed) return; // stop repeat keydown event
+
       arrayBtn.forEach(btn => {
         if (btn.code === 'CapsLock' && btn.code === e.code) {
           btn.classList.toggle(this.activeClass);
@@ -1023,6 +1038,7 @@ class PressingPhysicalButton {
           btn.classList.remove(this.activeClass);
         }
       });
+      this.allowed = true;
     });
   }
 
@@ -1078,19 +1094,9 @@ class Textarea {
   }
 
   setString(value) {
-    let letter = value;
     const start = this.textarea.value.slice(0, this.position);
     const finish = this.textarea.value.slice(this.position);
-
-    if (this.upperCaseText && !this.shift || !this.upperCaseText && this.shift) {
-      letter = value.toUpperCase();
-    } else if (this.upperCaseText && this.shift) {
-      letter = value.toLowerCase();
-    } else {
-      letter = value;
-    }
-
-    this.textarea.value = `${start}${letter}${finish}`;
+    this.textarea.value = `${start}${value}${finish}`;
     this.position += value.length;
     this.textarea.focus();
     this.textarea.setSelectionRange(this.position, this.position);
@@ -1163,10 +1169,10 @@ class Wrapper {
   init() {
     this.wrapper = new _createElement__WEBPACK_IMPORTED_MODULE_0__["default"]('div').init();
     this.wrapper.classList.add(this.className);
-    this.wrapper.append(new _description__WEBPACK_IMPORTED_MODULE_2__["default"]('task_description', 'RSSchool virtual keyboard task').init());
+    this.wrapper.append(new _description__WEBPACK_IMPORTED_MODULE_2__["default"]('task_description', 'RS-School virtual keyboard task').init());
     this.wrapper.append(this.keyboard);
     this.wrapper.append(new _description__WEBPACK_IMPORTED_MODULE_2__["default"]('task_description', 'For Windows').init());
-    this.wrapper.append(new _description__WEBPACK_IMPORTED_MODULE_2__["default"]('instructions', 'Press RightCtrl + Enter to change language').init());
+    this.wrapper.append(new _description__WEBPACK_IMPORTED_MODULE_2__["default"]('instructions', 'Press ControlLeft + AltLeft to change language').init());
     return this.wrapper;
   }
 
