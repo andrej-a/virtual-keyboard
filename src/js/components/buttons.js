@@ -85,14 +85,20 @@ export default class CreateButtons {
         case 'ShiftLeft':
           btn.addEventListener('mousedown', () => {
             this.shift = true;
+            this.instanceOfTextarea.setUpperCase(this.caps, this.shift);
+
             this.changeRegisterByShift(this.elements);
+
+            btn.addEventListener('mouseleave', () => {
+              this.shift = false;
+              this.instanceOfTextarea.setUpperCase(this.caps, this.shift);
+              this.changeRegisterByShift(this.elements);
+            });
           });
           btn.addEventListener('mouseup', () => {
             this.shift = false;
-            this.changeRegisterByShift(this.elements);
-          });
-          btn.addEventListener('mouseleave', () => {
-            this.shift = false;
+            this.instanceOfTextarea.setUpperCase(this.caps, this.shift);
+
             this.changeRegisterByShift(this.elements);
           });
           break;
@@ -100,14 +106,20 @@ export default class CreateButtons {
         case 'ShiftRight':
           btn.addEventListener('mousedown', () => {
             this.shift = true;
+            this.instanceOfTextarea.setUpperCase(this.caps, this.shift);
+
             this.changeRegisterByShift(this.elements);
+
+            btn.addEventListener('mouseleave', () => {
+              this.shift = false;
+              this.instanceOfTextarea.setUpperCase(this.caps, this.shift);
+              this.changeRegisterByShift(this.elements);
+            });
           });
           btn.addEventListener('mouseup', () => {
             this.shift = false;
-            this.changeRegisterByShift(this.elements);
-          });
-          btn.addEventListener('mouseleave', () => {
-            this.shift = false;
+            this.instanceOfTextarea.setUpperCase(this.caps, this.shift);
+
             this.changeRegisterByShift(this.elements);
           });
           break;
@@ -115,7 +127,7 @@ export default class CreateButtons {
         case 'CapsLock':
           btn.addEventListener('click', () => {
             this.caps = !this.caps;
-            this.instanceOfTextarea.setUpperCase(this.caps);
+            this.instanceOfTextarea.setUpperCase(this.caps, this.shift);
             this.changeRegisterByCaps(this.elements);
           });
           break;
@@ -185,6 +197,10 @@ export default class CreateButtons {
         case 'Tab':
           event.preventDefault();
           this.instanceOfTextarea.setString('    ');
+          break;
+        case 'Enter':
+          event.preventDefault();
+          this.instanceOfTextarea.setString('\n');
           break;
 
         default:
@@ -260,11 +276,13 @@ export default class CreateButtons {
       if (event.code === 'ShiftLeft' || event.code === 'ShiftRight') {
         this.shift = true;
         this.changeRegisterByShift(this.elements);
+        this.instanceOfTextarea.setUpperCase(this.caps, this.shift);
       }
     });
     document.addEventListener('keyup', (event) => {
       if (event.code === 'ShiftLeft' || event.code === 'ShiftRight') {
         this.shift = false;
+        this.instanceOfTextarea.setUpperCase(this.caps, this.shift);
         this.changeRegisterByShift(this.elements);
         allowed = true;
       }
@@ -275,7 +293,7 @@ export default class CreateButtons {
     document.addEventListener('keyup', (event) => {
       if (event.code === 'CapsLock') {
         this.caps = !this.caps;
-        this.instanceOfTextarea.setUpperCase(this.caps);
+        this.instanceOfTextarea.setUpperCase(this.caps, this.shift);
         this.changeRegisterByCaps(this.elements);
       }
     });

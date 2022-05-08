@@ -4,6 +4,7 @@ export default class Textarea {
     this.className = className;
     this.position = 0;
     this.upperCaseText = false;
+    this.shift = false;
   }
 
   init() {
@@ -14,9 +15,11 @@ export default class Textarea {
     return this.textarea;
   }
 
-  setUpperCase(value) {
+  setUpperCase(value, shift) {
     this.upperCaseText = value;
+    this.shift = shift;
     console.log(this.upperCaseText);
+    console.log(this.shift);
   }
 
   updatePositionByClick() {
@@ -33,9 +36,19 @@ export default class Textarea {
   }
 
   setString(value) {
+    let letter = value;
     const start = this.textarea.value.slice(0, this.position);
     const finish = this.textarea.value.slice(this.position);
-    this.textarea.value = `${start}${this.upperCaseText ? value.toUpperCase() : value.toLowerCase()}${finish}`;
+
+    if ((this.upperCaseText && !this.shift) || (!this.upperCaseText && this.shift)) {
+      letter = value.toUpperCase();
+    } else if ((this.upperCaseText && this.shift)) {
+      letter = value.toLowerCase();
+    } else {
+      letter = value;
+    }
+
+    this.textarea.value = `${start}${letter}${finish}`;
     this.position += value.length;
     this.textarea.focus();
     this.textarea.setSelectionRange(this.position, this.position);

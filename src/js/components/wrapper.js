@@ -16,7 +16,7 @@ export default class Wrapper {
     this.wrapper.append(new Description('task_description', 'RSSchool virtual keyboard task').init());
     this.wrapper.append(this.keyboard);
     this.wrapper.append(new Description('task_description', 'For Windows').init());
-    this.wrapper.append(new Description('instructions', 'Press Right Ctrl + Enter to change language').init());
+    this.wrapper.append(new Description('instructions', 'Press RightCtrl + Enter to change language').init());
     return this.wrapper;
   }
 }
