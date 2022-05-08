@@ -15,11 +15,13 @@
         height: auto;
         min-height: 300px;
         margin: 20px;
+        padding: 20px;
         display: flex;
         justify-content: center;
         align-items: center;
         flex-wrap: wrap;
         gap: 10px;
-
+        background: #535353;
+        box-shadow: 34px -12px 71px -20px #535353;
     }
 }

@@ -2,3 +2,8 @@
 @import './components/textarea.scss';
 @import './components/keyboard.scss';
 @import './components/button.scss';
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}

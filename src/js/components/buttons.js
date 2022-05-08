@@ -115,6 +115,7 @@ export default class CreateButtons {
         case 'CapsLock':
           btn.addEventListener('click', () => {
             this.caps = !this.caps;
+            this.instanceOfTextarea.setUpperCase(this.caps);
             this.changeRegisterByCaps(this.elements);
           });
           break;
@@ -157,6 +158,7 @@ export default class CreateButtons {
 
   physicalKeyboardInput() {
     document.addEventListener('keydown', (event) => {
+      this.textarea.focus();
       switch (event.code) {
         case 'Backspace':
           this.instanceOfTextarea.updatePositionByKeyboard(-1);
@@ -166,24 +168,29 @@ export default class CreateButtons {
           break;
         case 'ArrowLeft':
           event.preventDefault();
-          this.instanceOfTextarea.setString('◄');
+          this.instanceOfTextarea.setString('←');
           break;
         case 'ArrowUp':
           event.preventDefault();
-          this.instanceOfTextarea.setString('▲');
+          this.instanceOfTextarea.setString('↑');
           break;
         case 'ArrowDown':
           event.preventDefault();
-          this.instanceOfTextarea.setString('▼');
+          this.instanceOfTextarea.setString('↓');
           break;
         case 'ArrowRight':
           event.preventDefault();
-          this.instanceOfTextarea.setString('►');
+          this.instanceOfTextarea.setString('→');
+          break;
+        case 'Tab':
+          event.preventDefault();
+          this.instanceOfTextarea.setString('    ');
           break;
 
         default:
           if (event.key.length === 1) {
-            this.instanceOfTextarea.updatePositionByKeyboard(1);
+            event.preventDefault();
+            this.instanceOfTextarea.setString(event.key);
           }
           break;
       }
@@ -268,6 +275,7 @@ export default class CreateButtons {
     document.addEventListener('keyup', (event) => {
       if (event.code === 'CapsLock') {
         this.caps = !this.caps;
+        this.instanceOfTextarea.setUpperCase(this.caps);
         this.changeRegisterByCaps(this.elements);
       }
     });

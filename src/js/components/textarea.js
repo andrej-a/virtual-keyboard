@@ -3,6 +3,7 @@ export default class Textarea {
     this.textarea = null;
     this.className = className;
     this.position = 0;
+    this.upperCaseText = false;
   }
 
   init() {
@@ -11,6 +12,11 @@ export default class Textarea {
     this.textarea.autofocus = true;
     this.updatePositionByClick();
     return this.textarea;
+  }
+
+  setUpperCase(value) {
+    this.upperCaseText = value;
+    console.log(this.upperCaseText);
   }
 
   updatePositionByClick() {
@@ -29,7 +35,7 @@ export default class Textarea {
   setString(value) {
     const start = this.textarea.value.slice(0, this.position);
     const finish = this.textarea.value.slice(this.position);
-    this.textarea.value = `${start}${value}${finish}`;
+    this.textarea.value = `${start}${this.upperCaseText ? value.toUpperCase() : value.toLowerCase()}${finish}`;
     this.position += value.length;
     this.textarea.focus();
     this.textarea.setSelectionRange(this.position, this.position);
