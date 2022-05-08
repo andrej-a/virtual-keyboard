@@ -198,6 +198,11 @@ export default class CreateButtons {
           event.preventDefault();
           this.instanceOfTextarea.setString('    ');
           break;
+        case 'Space':
+          event.preventDefault();
+          this.instanceOfTextarea.setString(' ');
+          break;
+
         case 'Enter':
           event.preventDefault();
           this.instanceOfTextarea.setString('\n');
@@ -206,7 +211,12 @@ export default class CreateButtons {
         default:
           if (event.key.length === 1) {
             event.preventDefault();
-            this.instanceOfTextarea.setString(event.key);
+            const buttons = [...this.elements];
+            buttons.forEach((btn) => {
+              if (btn.code === event.code) {
+                this.instanceOfTextarea.setString(btn.innerText);
+              }
+            });
           }
           break;
       }
