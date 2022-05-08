@@ -33,7 +33,7 @@ export default class CreateButtons {
 
   init() {
     this.addKeyToKeyboard(keyInformation);
-    this.pressing.keyDown(this.parent.children);
+    this.pressing.keyDown(this.elements);
     this.physicalKeyboardInput();
   }
 
@@ -97,6 +97,21 @@ export default class CreateButtons {
           });
           break;
 
+        case 'ShiftRight':
+          btn.addEventListener('mousedown', () => {
+            this.shift = true;
+            this.changeRegisterByShift(this.elements);
+          });
+          btn.addEventListener('mouseup', () => {
+            this.shift = false;
+            this.changeRegisterByShift(this.elements);
+          });
+          btn.addEventListener('mouseleave', () => {
+            this.shift = false;
+            this.changeRegisterByShift(this.elements);
+          });
+          break;
+
         case 'CapsLock':
           btn.addEventListener('click', () => {
             this.caps = !this.caps;
@@ -134,12 +149,6 @@ export default class CreateButtons {
           });
           break;
 
-        case 'ArrowRight':
-          btn.addEventListener('click', (event) => {
-            this.instanceOfTextarea.setString('&#8594');
-          });
-          break;
-
         default:
           break;
       }
@@ -148,14 +157,35 @@ export default class CreateButtons {
 
   physicalKeyboardInput() {
     document.addEventListener('keydown', (event) => {
-      if (event.code === 'Backspace') {
-        this.instanceOfTextarea.updatePositionByKeyboard(-1);
-      } else if (event.code === 'Delete') {
-        this.instanceOfTextarea.updatePositionByKeyboard(0);
-      } else if (event.code === 'ArrowUp') {
-        console.log(event);
-      } else if (event.key.length === 1) {
-        this.instanceOfTextarea.updatePositionByKeyboard(1);
+      switch (event.code) {
+        case 'Backspace':
+          this.instanceOfTextarea.updatePositionByKeyboard(-1);
+          break;
+        case 'Delete':
+          this.instanceOfTextarea.updatePositionByKeyboard(0);
+          break;
+        case 'ArrowLeft':
+          event.preventDefault();
+          this.instanceOfTextarea.setString('◄');
+          break;
+        case 'ArrowUp':
+          event.preventDefault();
+          this.instanceOfTextarea.setString('▲');
+          break;
+        case 'ArrowDown':
+          event.preventDefault();
+          this.instanceOfTextarea.setString('▼');
+          break;
+        case 'ArrowRight':
+          event.preventDefault();
+          this.instanceOfTextarea.setString('►');
+          break;
+
+        default:
+          if (event.key.length === 1) {
+            this.instanceOfTextarea.updatePositionByKeyboard(1);
+          }
+          break;
       }
     });
   }
@@ -171,31 +201,43 @@ export default class CreateButtons {
         }
       } else if (this.shift) {
         buttons[i].innerText = localStorage.getItem('language') === 'EN' ? keyInformation[i].keyEN_SHIFT : keyInformation[i].keyRU_SHIFT;
-        buttons[i].innerText = buttons[i].system ? buttons[i].innerText : buttons[i].innerText.toLowerCase();
+        buttons[i].innerText = buttons[i].system
+          ? buttons[i].innerText : buttons[i].innerText.toLowerCase();
       } else {
         buttons[i].innerText = localStorage.getItem('language') === 'EN' ? keyInformation[i].key : keyInformation[i].keyRU;
-        buttons[i].innerText = buttons[i].system ? buttons[i].innerText : buttons[i].innerText.toUpperCase();
+        buttons[i].innerText = buttons[i].system
+          ? buttons[i].innerText : buttons[i].innerText.toUpperCase();
       }
     });
   }
 
   changeRegisterByCaps(array) {
     const buttons = [...array];
-    buttons.forEach((elem, i) => {
-      if (!this.shift) {
-        if (this.caps) {
-          buttons[i].innerText = buttons[i].system ? buttons[i].innerText : buttons[i].innerText.toUpperCase();
-        } else {
-          buttons[i].innerText = buttons[i].system ? buttons[i].innerText : buttons[i].innerText.toLowerCase();
-        }
-      } else if (this.shift) {
-        if (this.caps) {
-          buttons[i].innerText = buttons[i].system ? buttons[i].innerText : buttons[i].innerText.toLowerCase();
-        } else {
-          buttons[i].innerText = buttons[i].system ? buttons[i].innerText : buttons[i].innerText.toUpperCase();
-        }
+    if (!this.shift) {
+      if (this.caps) {
+        buttons.forEach((elem, i) => {
+          buttons[i].innerText = buttons[i].system
+            ? buttons[i].innerText : buttons[i].innerText.toUpperCase();
+        });
+      } else {
+        buttons.forEach((elem, i) => {
+          buttons[i].innerText = buttons[i].system
+            ? buttons[i].innerText : buttons[i].innerText.toLowerCase();
+        });
       }
-    });
+    } else if (this.shift) {
+      if (this.caps) {
+        buttons.forEach((elem, i) => {
+          buttons[i].innerText = buttons[i].system
+            ? buttons[i].innerText : buttons[i].innerText.toLowerCase();
+        });
+      } else {
+        buttons.forEach((elem, i) => {
+          buttons[i].innerText = buttons[i].system
+            ? buttons[i].innerText : buttons[i].innerText.toUpperCase();
+        });
+      }
+    }
   }
 
   pressToShift() {
@@ -208,13 +250,13 @@ export default class CreateButtons {
 
       if (!allowed) return; // stop repeat keydown event
 
-      if (event.code === 'ShiftLeft') {
+      if (event.code === 'ShiftLeft' || event.code === 'ShiftRight') {
         this.shift = true;
         this.changeRegisterByShift(this.elements);
       }
     });
     document.addEventListener('keyup', (event) => {
-      if (event.code === 'ShiftLeft') {
+      if (event.code === 'ShiftLeft' || event.code === 'ShiftRight') {
         this.shift = false;
         this.changeRegisterByShift(this.elements);
         allowed = true;
@@ -243,7 +285,8 @@ export default class CreateButtons {
 
     document.addEventListener('keyup', () => {
       // if each of keys from hot keys was pressing, and there are not any other keys
-      if (this.hotKeys.every((btn) => this.pressed.indexOf(btn) !== -1) && this.pressed.length <= this.hotKeys.length + 1) {
+      if (this.hotKeys.every((btn) => this.pressed.indexOf(btn) !== -1)
+      && this.pressed.length <= this.hotKeys.length + 1) {
         // change language in localStorage to opposite
         localStorage.setItem('language', `${localStorage.getItem('language') === 'EN' ? 'RU' : 'EN'}`);
 

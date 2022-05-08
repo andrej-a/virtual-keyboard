@@ -27,10 +27,10 @@ export default class Textarea {
   }
 
   setString(value) {
-    const start = this.textarea.innerHTML.slice(0, this.position);
-    const finish = this.textarea.innerHTML.slice(this.position);
-    this.textarea.innerHTML = `${start}${value}${finish}`;
-    this.position += value.length > 4 ? 1 : value.length;
+    const start = this.textarea.value.slice(0, this.position);
+    const finish = this.textarea.value.slice(this.position);
+    this.textarea.value = `${start}${value}${finish}`;
+    this.position += value.length;
     this.textarea.focus();
     this.textarea.setSelectionRange(this.position, this.position);
     console.log(this.position);
@@ -41,9 +41,9 @@ export default class Textarea {
       this.textarea.focus();
       return;
     }
-    const start = this.textarea.innerHTML.slice(0, this.position - rangeStart);
-    const finish = this.textarea.innerHTML.slice(this.position + rangeFinish);
-    this.textarea.innerHTML = `${start}${finish}`;
+    const start = this.textarea.value.slice(0, this.position - rangeStart);
+    const finish = this.textarea.value.slice(this.position + rangeFinish);
+    this.textarea.value = `${start}${finish}`;
 
     this.position = start.length;
     this.textarea.setSelectionRange(this.position, this.position);
