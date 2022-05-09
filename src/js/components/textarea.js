@@ -3,8 +3,6 @@ export default class Textarea {
     this.textarea = null;
     this.className = className;
     this.position = 0;
-    this.upperCaseText = false;
-    this.shift = false;
   }
 
   init() {
@@ -15,24 +13,15 @@ export default class Textarea {
     return this.textarea;
   }
 
-  setUpperCase(value, shift) {
-    this.upperCaseText = value;
-    this.shift = shift;
-    console.log(this.upperCaseText);
-    console.log(this.shift);
-  }
-
   updatePositionByClick() {
     this.textarea.addEventListener('click', () => {
       this.position = this.getPosition(this.textarea);
-      console.log(this.position);
     });
   }
 
   updatePositionByKeyboard(n) {
     this.position += n;
     this.position = this.position < 0 ? 0 : this.position;
-    console.log(this.position);
   }
 
   setString(value) {
@@ -43,7 +32,6 @@ export default class Textarea {
     this.position += value.length;
     this.textarea.focus();
     this.textarea.setSelectionRange(this.position, this.position);
-    console.log(this.position);
   }
 
   deleteLetter(rangeStart, rangeFinish) {
@@ -58,7 +46,6 @@ export default class Textarea {
     this.position = start.length;
     this.textarea.setSelectionRange(this.position, this.position);
     this.textarea.focus();
-    console.log(this.position);
   }
 
   getPosition(obj) {

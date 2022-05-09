@@ -1,5 +1,5 @@
-import Initialisation from './components/init';
+import Initialization from './components/init';
 
 (function init() {
-  new Initialisation('body').init();
+  new Initialization('body').init();
 }());

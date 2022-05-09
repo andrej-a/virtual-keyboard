@@ -10,7 +10,7 @@ const keyInformation = [
     key: '1',
     keyEN_SHIFT: '!',
     keyRU: '1',
-    keyRU_SHIFT: '"',
+    keyRU_SHIFT: '!',
     code: 'Digit1',
   },
   {
@@ -421,6 +421,14 @@ const keyInformation = [
     keyRU: '',
     keyRU_SHIFT: '',
     code: 'Space',
+    system: true,
+  },
+  {
+    key: 'Alt',
+    keyEN_SHIFT: 'Alt',
+    keyRU: 'Alt',
+    keyRU_SHIFT: 'Alt',
+    code: 'AltRight',
     system: true,
   },
   {
