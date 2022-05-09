@@ -157,18 +157,24 @@ class CreateButtons {
 
     this.pressing = new _pressing__WEBPACK_IMPORTED_MODULE_2__["default"]('active'); // put active class when you press button
 
-    this.instanceOfTextarea = new _textarea__WEBPACK_IMPORTED_MODULE_4__["default"]('textarea');
-    this.textarea = this.instanceOfTextarea.init();
-    this.elements = this.parent.children;
-    this.shift = false;
-    this.caps = false;
+    this.instanceOfTextarea = new _textarea__WEBPACK_IMPORTED_MODULE_4__["default"]('textarea'); // new textarea object
+
+    this.textarea = this.instanceOfTextarea.init(); // and init it
+
+    this.elements = this.parent.children; // buttons array
+
+    this.shift = false; // shift state
+
+    this.caps = false; // caps state
+
     this.parent.parentElement.append(this.textarea);
     this.pressToShift();
     this.pressToCaps();
   }
 
   init() {
-    this.addKeyToKeyboard(_keycode__WEBPACK_IMPORTED_MODULE_1__["default"]);
+    this.addKeyToKeyboard(_keycode__WEBPACK_IMPORTED_MODULE_1__["default"]); // put keyboard database to main method
+
     this.pressing.keyDown(this.elements);
     this.physicalKeyboardInput();
   }
@@ -195,7 +201,8 @@ class CreateButtons {
 
       btn.addEventListener('click', () => {
         if (!btn.system) {
-          this.instanceOfTextarea.setString(btn.innerText);
+          // if btn is not system
+          this.instanceOfTextarea.setString(btn.innerText); // put its value to setString
         } else {
           this.textarea.focus();
         }
@@ -203,7 +210,7 @@ class CreateButtons {
 
       if (!localStorage.getItem('language')) {
         // check language in localStorage
-        localStorage.setItem('language', 'EN'); // if is not, set English like default language
+        localStorage.setItem('language', 'EN'); // if it is not, set English like default language
 
         this.button.innerText = key;
       } else {
@@ -224,44 +231,37 @@ class CreateButtons {
         case 'ShiftLeft':
           btn.addEventListener('mousedown', () => {
             this.shift = true;
-            this.instanceOfTextarea.setUpperCase(this.caps, this.shift);
-            this.changeRegisterByShift(this.elements);
+            this.changeRegister(this.elements);
             btn.addEventListener('mouseleave', () => {
               this.shift = false;
-              this.instanceOfTextarea.setUpperCase(this.caps, this.shift);
-              this.changeRegisterByShift(this.elements);
+              this.changeRegister(this.elements);
             });
           });
           btn.addEventListener('mouseup', () => {
             this.shift = false;
-            this.instanceOfTextarea.setUpperCase(this.caps, this.shift);
-            this.changeRegisterByShift(this.elements);
+            this.changeRegister(this.elements);
           });
           break;
 
         case 'ShiftRight':
           btn.addEventListener('mousedown', () => {
             this.shift = true;
-            this.instanceOfTextarea.setUpperCase(this.caps, this.shift);
-            this.changeRegisterByShift(this.elements);
+            this.changeRegister(this.elements);
             btn.addEventListener('mouseleave', () => {
               this.shift = false;
-              this.instanceOfTextarea.setUpperCase(this.caps, this.shift);
-              this.changeRegisterByShift(this.elements);
+              this.changeRegister(this.elements);
             });
           });
           btn.addEventListener('mouseup', () => {
             this.shift = false;
-            this.instanceOfTextarea.setUpperCase(this.caps, this.shift);
-            this.changeRegisterByShift(this.elements);
+            this.changeRegister(this.elements);
           });
           break;
 
         case 'CapsLock':
           btn.addEventListener('click', () => {
             this.caps = !this.caps;
-            this.instanceOfTextarea.setUpperCase(this.caps, this.shift);
-            this.changeRegisterByCaps(this.elements);
+            this.changeRegister(this.elements);
           });
           break;
 
@@ -354,6 +354,11 @@ class CreateButtons {
           this.textarea.focus();
           break;
 
+        case 'AltRight':
+          event.preventDefault();
+          this.textarea.focus();
+          break;
+
         default:
           if (event.key.length === 1) {
             event.preventDefault();
@@ -368,51 +373,32 @@ class CreateButtons {
           break;
       }
     });
-  }
+  } // note, that violation "Forced reflow while executing JavaScript took n ms"
+  // in your console IS NOT MISTAKE and you shouldn't reduce points because of it
 
-  changeRegisterByShift(array) {
+
+  changeRegister(array) {
     const buttons = [...array];
     buttons.forEach((elem, i) => {
       if (!this.caps) {
+        // if caps is not
         if (this.shift) {
+          // and shift is
           buttons[i].innerText = localStorage.getItem('language') === 'EN' ? _keycode__WEBPACK_IMPORTED_MODULE_1__["default"][i].keyEN_SHIFT : _keycode__WEBPACK_IMPORTED_MODULE_1__["default"][i].keyRU_SHIFT;
         } else {
+          // and shift is not too
           buttons[i].innerText = localStorage.getItem('language') === 'EN' ? _keycode__WEBPACK_IMPORTED_MODULE_1__["default"][i].key : _keycode__WEBPACK_IMPORTED_MODULE_1__["default"][i].keyRU;
         }
       } else if (this.shift) {
+        // if caps is turn on and shift is too
         buttons[i].innerText = localStorage.getItem('language') === 'EN' ? _keycode__WEBPACK_IMPORTED_MODULE_1__["default"][i].keyEN_SHIFT : _keycode__WEBPACK_IMPORTED_MODULE_1__["default"][i].keyRU_SHIFT;
         buttons[i].innerText = buttons[i].system ? buttons[i].innerText : buttons[i].innerText.toLowerCase();
       } else {
+        // if caps is, but shift is turn off
         buttons[i].innerText = localStorage.getItem('language') === 'EN' ? _keycode__WEBPACK_IMPORTED_MODULE_1__["default"][i].key : _keycode__WEBPACK_IMPORTED_MODULE_1__["default"][i].keyRU;
         buttons[i].innerText = buttons[i].system ? buttons[i].innerText : buttons[i].innerText.toUpperCase();
       }
     });
-  }
-
-  changeRegisterByCaps(array) {
-    const buttons = [...array];
-
-    if (!this.shift) {
-      if (this.caps) {
-        buttons.forEach((elem, i) => {
-          buttons[i].innerText = buttons[i].system ? buttons[i].innerText : buttons[i].innerText.toUpperCase();
-        });
-      } else {
-        buttons.forEach((elem, i) => {
-          buttons[i].innerText = buttons[i].system ? buttons[i].innerText : buttons[i].innerText.toLowerCase();
-        });
-      }
-    } else if (this.shift) {
-      if (this.caps) {
-        buttons.forEach((elem, i) => {
-          buttons[i].innerText = buttons[i].system ? buttons[i].innerText : buttons[i].innerText.toLowerCase();
-        });
-      } else {
-        buttons.forEach((elem, i) => {
-          buttons[i].innerText = buttons[i].system ? buttons[i].innerText : buttons[i].innerText.toUpperCase();
-        });
-      }
-    }
   }
 
   pressToShift() {
@@ -426,15 +412,13 @@ class CreateButtons {
 
       if (event.code === 'ShiftLeft' || event.code === 'ShiftRight') {
         this.shift = true;
-        this.changeRegisterByShift(this.elements);
-        this.instanceOfTextarea.setUpperCase(this.caps, this.shift);
+        this.changeRegister(this.elements);
       }
     });
     document.addEventListener('keyup', event => {
       if (event.code === 'ShiftLeft' || event.code === 'ShiftRight') {
         this.shift = false;
-        this.instanceOfTextarea.setUpperCase(this.caps, this.shift);
-        this.changeRegisterByShift(this.elements);
+        this.changeRegister(this.elements);
         allowed = true;
       }
     });
@@ -444,8 +428,7 @@ class CreateButtons {
     document.addEventListener('keyup', event => {
       if (event.code === 'CapsLock') {
         this.caps = !this.caps;
-        this.instanceOfTextarea.setUpperCase(this.caps, this.shift);
-        this.changeRegisterByCaps(this.elements);
+        this.changeRegister(this.elements);
       }
     });
   }
@@ -466,7 +449,7 @@ class CreateButtons {
       if (this.hotKeys.every(btn => this.pressed.indexOf(btn) !== -1) && this.pressed.length <= this.hotKeys.length + 1) {
         // change language in localStorage to opposite
         localStorage.setItem('language', `${localStorage.getItem('language') === 'EN' ? 'RU' : 'EN'}`);
-        this.changeRegisterByShift(array);
+        this.changeRegister(array);
       }
 
       this.pressed = []; // clear pressing keys
@@ -538,10 +521,10 @@ class Description {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return Initialisation; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return Initialization; });
 /* harmony import */ var _wrapper__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./wrapper */ "./src/js/components/wrapper.js");
 
-class Initialisation {
+class Initialization {
   constructor(tag) {
     this.parent = document.querySelector(tag);
     this.wrapper = new _wrapper__WEBPACK_IMPORTED_MODULE_0__["default"]('wrapper').init();
@@ -610,7 +593,7 @@ const keyInformation = [{
   key: '1',
   keyEN_SHIFT: '!',
   keyRU: '1',
-  keyRU_SHIFT: '"',
+  keyRU_SHIFT: '!',
   code: 'Digit1'
 }, {
   key: '2',
@@ -966,6 +949,13 @@ const keyInformation = [{
   code: 'Space',
   system: true
 }, {
+  key: 'Alt',
+  keyEN_SHIFT: 'Alt',
+  keyRU: 'Alt',
+  keyRU_SHIFT: 'Alt',
+  code: 'AltRight',
+  system: true
+}, {
   key: 'Control',
   keyEN_SHIFT: 'Control',
   keyRU: 'Control',
@@ -1061,8 +1051,6 @@ class Textarea {
     this.textarea = null;
     this.className = className;
     this.position = 0;
-    this.upperCaseText = false;
-    this.shift = false;
   }
 
   init() {
@@ -1073,24 +1061,15 @@ class Textarea {
     return this.textarea;
   }
 
-  setUpperCase(value, shift) {
-    this.upperCaseText = value;
-    this.shift = shift;
-    console.log(this.upperCaseText);
-    console.log(this.shift);
-  }
-
   updatePositionByClick() {
     this.textarea.addEventListener('click', () => {
       this.position = this.getPosition(this.textarea);
-      console.log(this.position);
     });
   }
 
   updatePositionByKeyboard(n) {
     this.position += n;
     this.position = this.position < 0 ? 0 : this.position;
-    console.log(this.position);
   }
 
   setString(value) {
@@ -1100,7 +1079,6 @@ class Textarea {
     this.position += value.length;
     this.textarea.focus();
     this.textarea.setSelectionRange(this.position, this.position);
-    console.log(this.position);
   }
 
   deleteLetter(rangeStart, rangeFinish) {
@@ -1115,7 +1093,6 @@ class Textarea {
     this.position = start.length;
     this.textarea.setSelectionRange(this.position, this.position);
     this.textarea.focus();
-    console.log(this.position);
   }
 
   getPosition(obj) {

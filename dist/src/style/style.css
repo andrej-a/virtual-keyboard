@@ -51,10 +51,10 @@
   cursor: pointer;
   border: 0;
   font-size: 20px;
-  transition: background .1s ease; }
+  transition: all .1s ease; }
 
 .systemButton {
-  width: 90px; }
+  width: 80px; }
 
 .Backspace {
   width: 106px; }
@@ -79,10 +79,11 @@
   width: 140px; }
 
 .Space {
-  width: 380px; }
+  width: 330px; }
 
 .active {
-  background: #6389cf; }
+  background: #6389cf;
+  border-radius: 20px; }
 
 .button:hover, .systemButton:hover {
   background: #6389cf; }
