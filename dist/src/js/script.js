@@ -212,7 +212,7 @@ class CreateButtons {
         // check language in localStorage
         localStorage.setItem('language', 'EN'); // if it is not, set English like default language
 
-        this.button.innerText = key;
+        btn.innerText = key;
       } else {
         btn.innerText = localStorage.getItem('language') === 'EN' ? key : keyRU; // if it is, choose between EN and RU
       }
